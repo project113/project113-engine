@@ -3,6 +3,8 @@
 BUILD_PLATFORM       = Windows
 ECHO                 = echo
 MKDIR                = mkdir
+MKLINK               = mklink
+COPY                 = copy
 CC                   = cl
 AR                   = lib
 LINK                 = link
@@ -47,21 +49,33 @@ else
 endif
 
 
-# Even though we don't currently use any (other) extensions, Windows requires an
-# extension loader to use anything beyond OpenGL 1.1, so we include GLAD for now.
-3RDPARTY_LIST       += glad
-
-
 # Command string creation
 INTERNAL_CDEFS       = $(foreach def,$(INTERNAL_DEFS),/D$(def))
-COMPILE_CMD          = $(CC) $(COMMON_CFLAGS) $(BUILD_CFLAGS) $(COMMON_CDEFS) $(INTERNAL_CDEFS) $(CUSTOM_CFLAGS) /c /Fo$(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(src))) $(src)
+COMPILE_CMD          = $(CC) $(COMMON_CFLAGS) $(BUILD_CFLAGS) $(COMMON_CDEFS) $(INTERNAL_CDEFS) $(INTERNAL_CFLAGS) $(CUSTOM_CFLAGS) /c /Fo$(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(src))) $(src)
 SHLIB_LINK_CMD       = $(LINK) $(COMMON_LINKFLAGS) $(BUILD_LINKFLAGS) /DLL /OUT:$@ /IMPLIB:$(P113_IMPORT_LIB) $^ $(COMMON_LINKLIBS)
 STATICLIB_LINK_CMD   = $(AR) $(COMMON_LINKFLAGS) /OUT:$@ $^
 TEST_LINK_CMD        = $(LINK) $(COMMON_LINKFLAGS) $(BUILD_LINKFLAGS) /OUT:$(testbin) $(testobj) $(COMMON_LINKLIBS) $(BIN_LINKLIBS)
 
+
+# Link creation
+# Preferably this would use MKLINK but I'm too lazy to figure out the "File not
+# found" CreateProcess error at the moment.
+define FILE_MKLINK_RULE =
+  $(target):
+	@$(ECHO)   MKLINK  $(src) [to] $(target)
+	@$(COPY) /B /V "$(subst /,\,$(src))" "$(subst /,\,$(target))"
+endef
+
+define DIR_MKLINK_RULE =
+  $(target):
+	@$(ECHO)   MKLINK  $(src) [to] $(target)
+	@$(MKLINK) /D $(subst /,\,$(target)) $(subst /,\,$(src))
+endef
+
+
 # Directory creation and cleanup
 define BUILD_DIR_RULE =
-$(dir):
+  $(dir):
 	@$(ECHO)   MKDIR  $(dir)
 	@$(MKDIR) $(subst /,\,$(dir))
 endef

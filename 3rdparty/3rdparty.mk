@@ -10,7 +10,7 @@ ifdef 3RDPARTY_LIST_LEN
     $(info *** Adding $(3RDPARTY_LIST_LEN) 3rdparty libs - $(3RDPARTY_LIST))
     BUILD_DIRS_LIST   += $(BUILD_DIR)/$(3RDPARTY_DIR)
     INCLUDE_DIRS_LIST += $(3RDPARTY_DIR)
-    include $(foreach lib,$(3RDPARTY_LIST),$(3RDPARTY_DIR)/$(lib)/$(lib).mk)
+    include $(foreach lib,$(3RDPARTY_LIST),$(3RDPARTY_DIR)/make/$(lib).mk)
   else
     $(info *** Not building any 3rdparty libs - using SYSTEM_LIBS versions)
   endif

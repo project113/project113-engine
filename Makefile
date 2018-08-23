@@ -17,7 +17,7 @@ include make/Common.mk
   CUSTOM_CFLAGS         = $(null)
 #3RDPARTY_LIST: Libraries in 3RDPARTY_DIR/ to build from source
 # (instead of using system versions), separated by spaces.
-  3RDPARTY_LIST         = $(null)
+  3RDPARTY_LIST         = bgfx bimg bx
   SYSTEM_LIBS           = SDL2
   BASE_DIR              = $(CURDIR)
   3RDPARTY_DIR          = 3rdparty
