@@ -22,7 +22,7 @@ define TEST_RULES =
   $(eval TESTS_RUN_LIST+=RUN_$(test))
   $(eval TESTS_SRC_LIST+=$(testsrc))
 
-  $(testbin): $(testobj)
+  $(testbin): $(testobj) $(P113_BIN_LINK_LIB)
 	@$(ECHO)   LINK  $(testbin)
 	@$(TEST_LINK_CMD)
 

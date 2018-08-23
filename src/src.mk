@@ -11,7 +11,8 @@ BUILD_DIRS_LIST  += $(BUILD_DIR)/$(SRC_DIR)
 # Header (and other) dependency lists
 # Most actual object targets and dependency rules are generated in the main
 # Makefile (except for special cases requiring different build commands).
-$(SRC_DIR)/Engine.cxx_DEPS = $(P113_INCLUDE_DIR)/Engine.hxx
+$(SRC_DIR)/Engine.cxx_DEPS  = $(P113_INCLUDE_DIR)/Engine.hxx
+$(SRC_DIR)/ISystem.cxx_DEPS = $(P113_INCLUDE_DIR)/ISystem.hxx
 
 
 # Add P113 library targets

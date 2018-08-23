@@ -43,10 +43,12 @@ endif
 # We might build both lib versions, but only link tests/etc to one or the other
 # Ideally we'd stick this in src.mk, but we want to handle the import lib case
 ifdef BUILDING_SHARED_LIBS
-  BIN_LINKLIBS      += $(P113_IMPORT_LIB)
+  P113_BIN_LINK_LIB  = $(P113_IMPORT_LIB)
 else
-  BIN_LINKLIBS      += $(P113_STATIC_LIB)
+  P113_BIN_LINK_LIB  = $(P113_STATIC_LIB)
 endif
+BIN_LINKLIBS        += $(P113_BIN_LINK_LIB)
+$(P113_IMPORT_LIB): $(P113_SHARED_LIB)
 
 
 # Command string creation
