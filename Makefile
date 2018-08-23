@@ -59,6 +59,10 @@ include $(TESTS_DIR)/tests.mk
 TOTAL_SRCS := $(call length,$(SRC_LIST))
 
 
+# Would have been nice if the normal pattern rule worked, but apparently not...
+$(foreach src,$(P113_SRC_LIST) $(TESTS_SRC_LIST),$(eval $(src)_DEPS+=$(P113_INCLUDE_DIR)/Config.hxx))
+
+
 # Here's where the real magic happens; once SRC_LIST and *_DEPS have been
 # filled in by the scripts above, we generate a build target for every object
 # file using a generic compile / dependency rule template. It's all based on
@@ -88,7 +92,6 @@ endif
 # Set up build targets and make sure build directories are created
 # Default target 'all' is in the Common script included at the top, and depends
 # on 'build' and possibly 'runtests' depending on the build options.
-$(BUILD_DIR)/$(SRC_DIR)/%.$(OBJ_EXT): $(P113_INCLUDE_DIR)/Config.hxx
 pre-build: $(BUILD_DIRS_LIST)
 build: pre-build $(FINAL_TARGETS)
 	@$(ECHO) *** Finished build target

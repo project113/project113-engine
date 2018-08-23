@@ -16,7 +16,7 @@ define TEST_RULES =
   $(eval testbin:=$(addprefix $(TESTS_BIN_DIR)/,$(addsuffix $(BIN_SUFFIX),$(test))))
   $(eval TESTS_BIN_LIST+=$(testbin))
   $(eval TESTS_RUN_LIST+=RUN_$(test))
-  $(eval SRC_LIST+=$(testsrc))
+  $(eval TESTS_SRC_LIST+=$(testsrc))
 
   $(testbin): $(testobj)
 	@$(ECHO)   LINK  $(testbin)
@@ -28,6 +28,7 @@ define TEST_RULES =
 	@$(testbin)
 endef
 $(foreach test,$(TESTS_LIST),$(eval $(TEST_RULES)))
+SRC_LIST          += $(TESTS_SRC_LIST)
 
 
 # Generic test targets
