@@ -10,11 +10,11 @@ BIN_SUFFIX           = .exe
 STATICLIB_EXT        = lib
 SHLIB_EXT            = dll
 OBJ_EXT              = obj
-COMMON_CDEFS         = /DP113_PLATFORM_$(call uc,$(BUILD_PLATFORM)) /DP113_BUILD_$(call uc,BUILD_TYPE) $(if $(BUILDING_SHARED_LIBS),/DP113_BUILD_SHARED)
-COMMON_CFLAGS        = /nologo /I$(INCLUDE_DIR) /utf-8 /EHsc /permissive-
-COMMON_LINKFLAGS     = /nologo
-COMMON_LINKLIBS      = $(addsuffix .$(STATICLIB_EXT),$(SYSTEM_LIBS))
-TEST_BUILDFLAGS      = $(null)
+COMMON_CDEFS        += /DP113_PLATFORM_$(call uc,$(BUILD_PLATFORM)) /DP113_BUILD_$(call uc,BUILD_TYPE) $(if $(BUILDING_SHARED_LIBS),/DP113_BUILD_SHARED)
+COMMON_CFLAGS       += /nologo /I$(INCLUDE_DIR) /utf-8 /EHsc /permissive-
+COMMON_LINKFLAGS    += /nologo /SUBSYSTEM:CONSOLE
+COMMON_LINKLIBS     += $(addsuffix .$(STATICLIB_EXT),$(SYSTEM_LIBS))
+BIN_LINKLIBS        += SDL2main.lib
 
 
 # Build type configuration
@@ -25,8 +25,7 @@ ifeq ($(BUILD_TYPE),Release)
   P113_SHARED_LIB    = $(BIN_DIR)/$(PROJECT_NAME).$(SHLIB_EXT)
   P113_IMPORT_LIB    = $(LIB_DIR)/$(PROJECT_NAME).$(SHLIB_EXT).$(STATICLIB_EXT)
   P113_STATIC_LIB    = $(LIB_DIR)/$(PROJECT_NAME).$(STATICLIB_EXT)
-  SHLIB_LINK_CMD     = $(LINK) $(COMMON_LINKFLAGS) /NXCOMPAT /DEBUG:NONE /DLL /OUT:$@ /IMPLIB:$(P113_IMPORT_LIB) $^ $(COMMON_LINKLIBS)
-  STATICLIB_LINK_CMD = $(AR) $(COMMON_LINKFLAGS) /OUT:$@ $^
+  BUILD_LINKFLAGS    = /NXCOMPAT /DEBUG:NONE
 
 # Default to a Debug build type if another one wasn't already handled
 else
@@ -35,8 +34,16 @@ else
   P113_SHARED_LIB    = $(BIN_DIR)/$(PROJECT_NAME)d.$(SHLIB_EXT)
   P113_IMPORT_LIB    = $(LIB_DIR)/$(PROJECT_NAME)d.$(SHLIB_EXT).$(STATICLIB_EXT)
   P113_STATIC_LIB    = $(LIB_DIR)/$(PROJECT_NAME)d.$(STATICLIB_EXT)
-  SHLIB_LINK_CMD     = $(LINK) $(COMMON_LINKFLAGS) /NXCOMPAT /DEBUG:FULL /DLL /OUT:$@ /IMPLIB:$(P113_IMPORT_LIB) $^ $(COMMON_LINKLIBS)
-  STATICLIB_LINK_CMD = $(AR) $(COMMON_LINKFLAGS) /OUT:$@ $^ 
+  BUILD_LINKFLAGS    = /NXCOMPAT /DEBUG:FULL /DYNAMICBASE:NO
+endif
+
+
+# We might build both lib versions, but only link tests/etc to one or the other
+# Ideally we'd stick this in src.mk, but we want to handle the import lib case
+ifdef BUILDING_SHARED_LIBS
+  BIN_LINKLIBS      += $(P113_IMPORT_LIB)
+else
+  BIN_LINKLIBS      += $(P113_STATIC_LIB)
 endif
 
 
@@ -48,10 +55,9 @@ endif
 # Command string creation
 INTERNAL_CDEFS       = $(foreach def,$(INTERNAL_DEFS),/D$(def))
 COMPILE_CMD          = $(CC) $(COMMON_CFLAGS) $(BUILD_CFLAGS) $(COMMON_CDEFS) $(INTERNAL_CDEFS) $(CUSTOM_CFLAGS) /c /Fo$(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(src))) $(src)
-# TODO: Finish test building/linking
-#BUILD_TEST_CMD        = $(CC) $(COMMON_CFLAGS) /SUBSYSTEM:CONSOLE $(BUILD_CFLAGS) $(COMMON_CDEFS) $(INTERNAL_CDEFS) $(CUSTOM_CFLAGS) /Fo$@ $<
-#LINK_TEST_CMD         =
-
+SHLIB_LINK_CMD       = $(LINK) $(COMMON_LINKFLAGS) $(BUILD_LINKFLAGS) /DLL /OUT:$@ /IMPLIB:$(P113_IMPORT_LIB) $^ $(COMMON_LINKLIBS)
+STATICLIB_LINK_CMD   = $(AR) $(COMMON_LINKFLAGS) /OUT:$@ $^
+TEST_LINK_CMD        = $(LINK) $(COMMON_LINKFLAGS) $(BUILD_LINKFLAGS) /OUT:$(testbin) $(testobj) $(COMMON_LINKLIBS) $(BIN_LINKLIBS)
 
 # Directory creation and cleanup
 define BUILD_DIR_RULE =
@@ -61,5 +67,5 @@ $(dir):
 endef
 
 clean:
-	@$(ECHO) *** Deleting build directories
+	@$(ECHO)     RMDIR $(BUILD_DIRS_LIST)
 	-@rmdir /S /Q $(subst /,\,$(BUILD_DIRS_LIST))

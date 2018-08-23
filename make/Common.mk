@@ -15,18 +15,19 @@ endef
 
 
 # Make sure BASE_DIR is flattened, and have a place to specify initial values
-# for other common internal vars just for the sake of completeness.
+# for other additive internal vars just for the sake of completeness.
 BASE_DIR           := $(BASE_DIR)
 PROJECT_NAME        = Project113
-INTERNAL_DEFS       = $(null)
 SRC_LIST            = $(null)
 P113_SRC_LIST       = $(null)
 P113_OBJ_LIST       = $(null)
-P113_SHARED_LIB     = $(null)
-P113_IMPORT_LIB     = $(null)
-P113_STATIC_LIB     = $(null)
 P113_INCLUDE_DIR    = $(INCLUDE_DIR)/$(PROJECT_NAME)
 BUILD_DIRS_LIST     = $(BUILD_DIR) $(BIN_DIR) $(LIB_DIR)
+INTERNAL_DEFS       = $(null)
+COMMON_CFLAGS       = $(null)
+COMMON_LINKFLAGS    = $(null)
+COMMON_LINKLIBS     = $(null)
+BIN_LINKLIBS        = $(null)
 FINAL_TARGETS       = $(null)
 BUILD_PROGRESS      = $(null)
 
