@@ -9,27 +9,75 @@
 #define P113_BUILDING_LIB
 #include <Project113/Engine.hxx>
 using namespace Project113;
+using namespace std;
 
-Engine::Engine() {
-	_initialized = false;
+bool Engine::_initialized = false;
+
+Engine::Engine() { }
+
+
+Engine::~Engine() {
+	destroy();
 }
 
+
 bool Engine::init() {
-	SDL_Init(0);
-	SDL_InitSubSystem(SDL_INIT_TIMER);
-	_initialized = true;
+	if (!_initialized) {
+		SDL_Init(0);
+		SDL_InitSubSystem(SDL_INIT_TIMER);
+		_initialized = true;
+	}
 
 	return _initialized;
 }
 
+
+bool Engine::update() {
+	if (!_initialized)
+		return false;
+
+	bool status = true;
+	for (vector<IUpdatableSystem*>::iterator it  = _updatableSystems.begin(); it != _updatableSystems.end(); ++it)
+		status &= (*it)->update();
+
+	return status;
+}
+
 void Engine::destroy() {
 	if (_initialized) {
+		for (vector<ISystem*>::iterator it  = _systems.begin(); it != _systems.end(); ++it)
+			delete (*it);
+		for (vector<IUpdatableSystem*>::iterator it  = _updatableSystems.begin(); it != _updatableSystems.end(); ++it)
+			delete (*it);
+
 		SDL_QuitSubSystem(SDL_INIT_TIMER);
 		SDL_Quit();
 		_initialized = false;
 	}
 }
 
-Engine::~Engine() {
-	destroy();
+
+bool Engine::addSystem(ISystem* sys) {
+	if (!_initialized || (sys == NULL))
+		return false;
+
+	if (sys->init())
+		_systems.push_back(sys);
+	else
+		return false;
+
+	return true;
+}
+
+
+bool Engine::addSystem(IUpdatableSystem* sys) {
+	if (!_initialized || (sys == NULL))
+		return false;
+
+	if (sys->init())
+		_updatableSystems.push_back(sys);
+	else
+		return false;
+
+	return true;
 }

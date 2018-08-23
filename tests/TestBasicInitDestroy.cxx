@@ -13,10 +13,10 @@ int main(int argc, char* argv[]) {
 	LOG_INFO("[Beginning TestBasicInitDestroy]");
 	LOG_INFO("Purpose: Verify that the engine and all available subsystems can be successfully initialized and destroyed.");
 	LOG_INFO("   Creating engine object...");
-	Engine engine;
+	Engine* engine = new Engine;
 
 	LOG_INFO("   Initializing engine...");
-	if (engine.init()) {
+	if (engine->init()) {
 		LOG_INFO("++ Engine initialized");
 	} else {
 		LOG_INFO("!! Engine failed to initialize! Exiting...");
@@ -24,8 +24,13 @@ int main(int argc, char* argv[]) {
 	}
 
 	LOG_INFO("   Destroying engine...");
-	engine.destroy();
+	engine->destroy();
 	LOG_INFO("++ Engine destroyed");
+
+	LOG_INFO("   Deleting engine...");
+	delete engine;
+	LOG_INFO("++ Engine deleted");
 	LOG_INFO("[Finished TestBasicInitDestroy]");
+
 	return 0;
 }

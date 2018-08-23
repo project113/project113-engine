@@ -5,30 +5,27 @@
 *******************************************************************************
 * (doc tags)
 ******************************************************************************/
-#ifndef _PROJECT113_ENGINE_HXX_
-#define _PROJECT113_ENGINE_HXX_
+#ifndef _PROJECT113_ISYSTEM_HXX_
+#define _PROJECT113_ISYSTEM_HXX_
 
 #include "Project113/Config.hxx"
-#include "Project113/ISystem.hxx"
-
-#include SDL_HEADER(SDL.h)
-#include <vector>
 
 namespace Project113 {
-	class P113_API Engine {
+	class ISystem {
 		public:
-			Engine();
-			~Engine();
-			bool init();
-			bool update();
-			void destroy();
-			bool addSystem(ISystem* sys);
-			bool addSystem(IUpdatableSystem* sys);
+			ISystem();
+			virtual ~ISystem();
+			virtual bool init() = 0;
+			virtual bool isInitialized();
+			virtual void destroy();
 
 		protected:
-			static bool _initialized;
-			std::vector<ISystem*> _systems;
-			std::vector<IUpdatableSystem*> _updatableSystems;
+			bool _initialized;
+	};
+
+	class IUpdatableSystem: public ISystem {
+		public:
+			virtual bool update() = 0;
 	};
 }
-#endif //_PROJECT113_ENGINE_HXX_
+#endif //_PROJECT113_ISYSTEM_HXX_

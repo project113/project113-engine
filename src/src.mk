@@ -1,5 +1,7 @@
 # Project113 sources subscript
-P113_SRC_LIST    += $(SRC_DIR)/Engine.cxx
+P113_SRC_LIST    +=              \
+   $(SRC_DIR)/Engine.cxx         \
+   $(SRC_DIR)/ISystem.cxx
 
 SRC_LIST         += $(P113_SRC_LIST)
 P113_OBJ_LIST    += $(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(P113_SRC_LIST)))

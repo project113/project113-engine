@@ -8,6 +8,10 @@ ifneq ($(TESTS_BIN_DIR),$(BIN_DIR))
 endif
 
 
+# Test dependencies
+$(TESTS_DIR)/TestBasicInitDestroy.cxx_DEPS = $(P113_INCLUDE_DIR)/Engine.hxx
+
+
 # Generate the test link/run rules, for now foolishly assuming that each test
 # binary is derived from a single corresponding .cxx/object file. TODO: Fix that
 define TEST_RULES =
