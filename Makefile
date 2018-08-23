@@ -28,7 +28,7 @@ include make/Common.mk
   BIN_DIR               = $(BUILD_DIR)/bin
   LIB_DIR               = $(BUILD_DIR)/lib
 #TESTS_LIST by default includes all tests
-  TESTS_LIST            = TestEngineBasic
+  TESTS_LIST            = TestBasicInitDestroy
 # *** End of config options ***
 
 # Flatten some config options to avoid constantly making the calls shown during expansions
@@ -66,9 +66,10 @@ TOTAL_SRCS := $(call length,$(SRC_LIST))
 # possible dependency list), and that most compilations use the same command.
 # If special cases are needed, just add regular old-fashioned rules where appropriate.
 define OBJ_COMPILE_RULE =
-$(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(src))): $(src) $($(src)_DEPS)
+$(eval objfile:=$(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(src))))
+$(objfile): $(src) $($(src)_DEPS)
 	$(eval BUILD_PROGRESS:=$(call int_inc,$(BUILD_PROGRESS)))
-	@$(ECHO)     COMPILE [$(call int_decode,$(BUILD_PROGRESS))/$(TOTAL_SRCS)] $(src)
+	@$(ECHO)   BUILD [$(call int_decode,$(BUILD_PROGRESS))/$(TOTAL_SRCS)] $(objfile)
 	@$(COMPILE_CMD)
 endef
 $(foreach src,$(SRC_LIST),$(eval $(OBJ_COMPILE_RULE)))

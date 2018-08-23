@@ -10,20 +10,22 @@
 using namespace Project113;
 
 int main(int argc, char* argv[]) {
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[Beginning Engine (Basic) test]");
+	LOG_INFO("[Beginning TestBasicInitDestroy]");
+	LOG_INFO("Purpose: Verify that the engine and all available subsystems can be successfully initialized and destroyed.");
+	LOG_INFO("   Creating engine object...");
 	Engine engine;
 
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Initializing engine...");
+	LOG_INFO("   Initializing engine...");
 	if (engine.init()) {
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "++ Engine initialized");
+		LOG_INFO("++ Engine initialized");
 	} else {
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "!! Engine failed to initialize! Exiting...");
+		LOG_INFO("!! Engine failed to initialize! Exiting...");
 		return 1;
 	}
 
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Destroying engine...");
+	LOG_INFO("   Destroying engine...");
 	engine.destroy();
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "++ Engine destroyed");
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[Finished Engine (Basic) test]");
+	LOG_INFO("++ Engine destroyed");
+	LOG_INFO("[Finished TestBasicInitDestroy]");
 	return 0;
 }

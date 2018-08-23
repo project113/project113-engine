@@ -22,9 +22,9 @@ ifdef BUILDING_STATIC_LIBS
 endif
 
 $(P113_SHARED_LIB):	$(P113_OBJ_LIST)
-	@$(ECHO)     LINK $@
+	@$(ECHO)   LINK  $@
 	@$(SHLIB_LINK_CMD)
 
 $(P113_STATIC_LIB):	$(P113_OBJ_LIST)
-	@$(ECHO)     LINK $@
+	@$(ECHO)   LINK  $@
 	@$(STATICLIB_LINK_CMD)

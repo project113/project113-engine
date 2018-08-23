@@ -19,12 +19,12 @@ define TEST_RULES =
   $(eval SRC_LIST+=$(testsrc))
 
   $(testbin): $(testobj)
-	@$(ECHO)     LINK $(testbin)
+	@$(ECHO)   LINK  $(testbin)
 	@$(TEST_LINK_CMD)
 
   .PHONY: RUN_$(test)
   RUN_$(test): $(testbin)
-	@$(ECHO)     TEST $(test)
+	@$(ECHO)   TEST  $(test)
 	@$(testbin)
 endef
 $(foreach test,$(TESTS_LIST),$(eval $(TEST_RULES)))

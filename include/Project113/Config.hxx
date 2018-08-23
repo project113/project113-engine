@@ -21,7 +21,7 @@
 
 // Debug build stuff
 #ifdef P113_BUILD_DEBUG
-
+	#define LOG_DEBUG(x, ...) SDL_LogMessage(SDL_LOG_CATEGORY_TEST, SDL_LOG_PRIORITY_DEBUG, x, __VA_ARGS__)
 #endif //P113_BUILD_DEBUG
 
 
@@ -37,8 +37,21 @@
 #endif //P113_PLATFORM_WINDOWS
 
 
-// Make sure declspec is defined
+// Make sure all needed macros are defined
 #ifndef P113_API
 	#define P113_API
 #endif //P113_API
+
+#ifndef LOG_DEBUG
+	// Why even waste the space if we're not debugging?
+	#define LOG_DEBUG(x, ...)
+#endif //LOG_DEBUG(X)
+
+#ifndef LOG_INFO
+	#define LOG_INFO(x, ...) SDL_Log(x, __VA_ARGS__)
+#endif //LOG_INFO(X)
+
+#ifndef LOG_ERROR
+	#define LOG_ERROR(x, ...) SDL_LogMessage(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_ERROR, x, __VA_ARGS__)
+#endif //LOG_ERROR(X)
 #endif //_PROJECT113_CONFIG_HXX_

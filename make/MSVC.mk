@@ -10,7 +10,7 @@ BIN_SUFFIX           = .exe
 STATICLIB_EXT        = lib
 SHLIB_EXT            = dll
 OBJ_EXT              = obj
-COMMON_CDEFS        += /DP113_PLATFORM_$(call uc,$(BUILD_PLATFORM)) /DP113_BUILD_$(call uc,BUILD_TYPE) $(if $(BUILDING_SHARED_LIBS),/DP113_BUILD_SHARED)
+COMMON_CDEFS        += /DP113_PLATFORM_$(call uc,$(BUILD_PLATFORM)) /DP113_BUILD_$(call uc,$(BUILD_TYPE)) $(if $(BUILDING_SHARED_LIBS),/DP113_BUILD_SHARED)
 COMMON_CFLAGS       += /nologo /I$(INCLUDE_DIR) /utf-8 /EHsc /permissive-
 COMMON_LINKFLAGS    += /nologo /SUBSYSTEM:CONSOLE
 COMMON_LINKLIBS     += $(addsuffix .$(STATICLIB_EXT),$(SYSTEM_LIBS))
@@ -62,10 +62,10 @@ TEST_LINK_CMD        = $(LINK) $(COMMON_LINKFLAGS) $(BUILD_LINKFLAGS) /OUT:$(tes
 # Directory creation and cleanup
 define BUILD_DIR_RULE =
 $(dir):
-	@$(ECHO)     MKDIR $(dir)
+	@$(ECHO)   MKDIR  $(dir)
 	@$(MKDIR) $(subst /,\,$(dir))
 endef
 
 clean:
-	@$(ECHO)     RMDIR $(BUILD_DIRS_LIST)
+	@$(ECHO)   RMDIR  $(BUILD_DIRS_LIST)
 	-@rmdir /S /Q $(subst /,\,$(BUILD_DIRS_LIST))
