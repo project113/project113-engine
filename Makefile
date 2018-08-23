@@ -22,7 +22,8 @@ include make/Common.mk
   BASE_DIR              = $(CURDIR)
   3RDPARTY_DIR          = 3rdparty
   SRC_DIR               = src
-  INCLUDE_DIR           = include
+  BASE_INCLUDE_DIR      = include
+  INCLUDE_DIRS_LIST     = $(BASE_INCLUDE_DIR)
   TESTS_DIR             = tests
   BUILD_DIR             = obj
   BIN_DIR               = $(BUILD_DIR)/bin
