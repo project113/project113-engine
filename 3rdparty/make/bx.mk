@@ -1,15 +1,27 @@
 # Project113 "3rdparty" subscript: BX
-# For now just cheat and link it directly into P113.
 BX_DIR               = $(3RDPARTY_DIR)/bx
 BX_INCLUDE_DIR       = $(BX_DIR)/include
 BX_SRC               = $(BX_DIR)/src/amalgamated.cpp
 $(BX_SRC)_DEPS       = $(wildcard $(BX_INCLUDE_DIR)/bx/*.h) \
                        $(wildcard $(BX_DIR)/src/*.h) \
                        $(wildcard $(BX_DIR)/src/*.cpp)
-P113_SRC_LIST       += $(BX_SRC)
 INCLUDE_DIRS_LIST   += $(BX_INCLUDE_DIR) $(BX_DIR)/3rdparty
 BUILD_DIRS_LIST     += $(BUILD_DIR)/$(BX_DIR) $(BUILD_DIR)/$(BX_DIR)/src
+SRC_LIST            += $(BX_SRC)
+bx_LIB_OBJS          = $(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(BX_SRC)))
 
+# BX doesn't have special support for building as a shared library
+old_shlib_option:=$(BUILDING_SHARED_LIBS)
+old_statlib_option:=$(BUILDING_STATIC_LIBS)
+BUILDING_SHARED_LIBS:=$(null)
+BUILDING_STATIC_LIBS:=y
+lib:=bx
+$(eval $(MAKE_LIBS_RULE))
+BUILDING_SHARED_LIBS:=$(old_shlib_option)
+BUILDING_STATIC_LIBS:=$(old_statlib_option)
+
+
+# Build config
 ifeq ($(BUILD_TYPE),Debug)
   INTERNAL_DEFS     += BX_CONFIG_DEBUG=1
 endif

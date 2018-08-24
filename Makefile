@@ -32,12 +32,20 @@ include make/Common.mk
   TESTS_LIST            = TestBasicInitDestroy
 # *** End of config options ***
 
-# Flatten some config options to avoid constantly making the calls shown during expansions
+# Flatten some config options to avoid constantly making the calls below during
+# expansions; also sanity-check to ensure we're building either shared or static.
 ifeq ($(call lc,$(call substr,$(BUILD_SHARED_LIBS),1,1)),y)
   BUILDING_SHARED_LIBS := y
 endif
+
 ifeq ($(call lc,$(call substr,$(BUILD_STATIC_LIBS),1,1)),y)
   BUILDING_STATIC_LIBS := y
+endif
+
+ifndef BUILDING_SHARED_LIBS
+ifndef BUILDING_STATIC_LIBS
+  BUILDING_STATIC_LIBS := y
+endif
 endif
 
 
@@ -78,7 +86,11 @@ $(objfile): $(src) $($(src)_DEPS)
 	@$(COMPILE_CMD)
 endef
 $(foreach src,$(SRC_LIST),$(eval $(OBJ_COMPILE_RULE)))
+
+# Similarly, generate the library and directory creation rules
 $(foreach dir,$(BUILD_DIRS_LIST),$(eval $(BUILD_DIR_RULE)))
+$(foreach lib,$(LIBS_BUILD_LIST),$(eval $(MAKE_LIBS_RULE)))
+$(foreach test,$(TESTS_LIST),$(eval $(TEST_RULES)))
 
 
 # Make sure there's actually some valid target somewhere

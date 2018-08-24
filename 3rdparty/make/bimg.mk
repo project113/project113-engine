@@ -1,5 +1,4 @@
 # Project113 "3rdparty" subscript: BIMG
-# For now just cheat and link it directly into P113.
 
 # Directories
 BIMG_DIR            = $(3RDPARTY_DIR)/bimg
@@ -30,7 +29,7 @@ BIMG_EDTAA_SRC      = $(BIMG_EDTAA_DIR)/edtaa3func.cpp
 BIMG_ASTC_SRC       = $(wildcard $(BIMG_ASTC_DIR)/*.cpp)
 
 
-P113_SRC_LIST      += $(BIMG_SRC)             \
+BIMG_SRC_LIST       = $(BIMG_SRC)             \
                       $(BIMG_LIBSQUISH_SRC)   \
                       $(BIMG_IQA_SRC)         \
                       $(BIMG_ETC1_SRC)        \
@@ -63,6 +62,8 @@ BUILD_DIRS_LIST    += $(BUILD_DIR)/$(BIMG_DIR)             \
                       $(BUILD_DIR)/$(BIMG_EDTAA_DIR)       \
                       $(BUILD_DIR)/$(BIMG_ASTC_DIR)
 
+SRC_LIST           += $(BIMG_SRC_LIST)
+bimg_LIB_OBJS       = $(addprefix $(BUILD_DIR)/,$(addsuffix .$(OBJ_EXT),$(BIMG_SRC_LIST)))
 
 # Add dependencies; just trigger a rebuild of the whole sub-lib if any of its
 # headers change, rather than trying to be exact.
@@ -75,6 +76,17 @@ $(foreach src,$(BIMG_NVTT_SRC),$(eval $(src)_DEPS=$(BIMG_NVTT_DIR)/nvtt.h $(wild
 $(foreach src,$(BIMG_PVRTC_SRC),$(eval $(src)_DEPS=$(wildcard $(BIMG_PVRTC_DIR)/*.h)))
 $(BIMG_EDTAA_SRC)_DEPS = $(BIMG_EDTAA_DIR)/edtaa3func.h
 $(foreach src,$(BIMG_ASTC_SRC),$(eval $(src)_DEPS=$(wildcard $(BIMG_ASTC_DIR)/*.h)))
+
+
+# BIMG doesn't have special support for building as a shared library
+old_shlib_option:=$(BUILDING_SHARED_LIBS)
+old_statlib_option:=$(BUILDING_STATIC_LIBS)
+BUILDING_SHARED_LIBS:=$(null)
+BUILDING_STATIC_LIBS:=y
+lib:=bimg
+$(eval $(MAKE_LIBS_RULE))
+BUILDING_SHARED_LIBS:=$(old_shlib_option)
+BUILDING_STATIC_LIBS:=$(old_statlib_option)
 
 
 # Disable silly codepage warning caused by NVTT author name
