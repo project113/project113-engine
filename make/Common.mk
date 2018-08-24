@@ -32,6 +32,12 @@ FINAL_TARGETS       = $(null)
 BUILD_PROGRESS      = $(null)
 
 
+# Disable built-in implicit rules for consistency and to speed things up a bit
+# (you can see what the actual effects are with 'make -d')
+MAKEFLAGS          += --no-builtin-rules
+.SUFFIXES:
+
+
 # Specify default target here so it's always the first one found. 'build' is a
 # dummy target at the bottom of the main Makefile, after everything else is included.
 all: build

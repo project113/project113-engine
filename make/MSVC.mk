@@ -83,5 +83,6 @@ define BUILD_DIR_RULE =
 endef
 
 clean:
-	@$(ECHO)   RMDIR  $(BUILD_DIRS_LIST)
-	-@rmdir /S /Q $(subst /,\,$(BUILD_DIRS_LIST))
+	$(eval REMOVE_DIRS_LIST:=$(subst /,\,$(call reverse,$(BUILD_DIRS_LIST))))
+	@$(ECHO)   RMDIR  $(REMOVE_DIRS_LIST)
+	-@rmdir /S /Q $(REMOVE_DIRS_LIST)
